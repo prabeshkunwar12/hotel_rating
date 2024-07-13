@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lcwd.user.service.entities.User;
+import com.lcwd.user.service.exceptions.IncompleteDataException;
 import com.lcwd.user.service.exceptions.ResourseNotFoundException;
 import com.lcwd.user.service.repositores.UserRepository;
 import com.lcwd.user.service.services.UserService;
@@ -41,7 +42,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(User user) {
-        userRepository.deleteById(user.getId());
+        String id = user.getId();
+        if (id == null)
+            throw new IncompleteDataException("User id is required for update.");
+        delete(id);
         return userRepository.save(user);
     }
 

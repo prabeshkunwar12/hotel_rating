@@ -44,7 +44,7 @@ public class HotelServiceImpl implements HotelService {
         String id = hotel.getId();
         if (id == null)
             throw new IncompleteDataException("Id is mandatory for the update");
-        delete(hotel.getId());
+        delete(id);
         return repository.save(hotel);
     }
 

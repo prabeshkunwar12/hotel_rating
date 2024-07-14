@@ -5,3 +5,10 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017
       database: hotel_rating
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

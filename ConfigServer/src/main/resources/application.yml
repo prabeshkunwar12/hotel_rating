@@ -6,7 +6,5 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/prabeshkunwar12/hotel_rating
+          uri: https://github.com/prabeshkunwar12/hotel_rating/tree/main/ConfigProperties
           clone-on-start: true
-          basedir:
-            name: ConfigProperties

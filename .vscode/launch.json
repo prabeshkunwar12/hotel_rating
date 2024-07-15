@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ConfigServerApplication",
+            "request": "launch",
+            "mainClass": "com.lcwd.config.server.ConfigServerApplication",
+            "projectName": "ConfigServer"
+        },
+        {
+            "type": "java",
             "name": "ApiGatewayApplication",
             "request": "launch",
             "mainClass": "com.lcwd.gateway.ApiGatewayApplication",

@@ -1,20 +1,22 @@
 package com.lcwd.user.service.services.impl;
 
 import java.util.List;
-import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+// import org.springframework.http.ResponseEntity;
+// import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+// import org.springframework.web.client.RestTemplate;
 
 import com.lcwd.user.service.entities.Hotel;
 import com.lcwd.user.service.entities.Rating;
 import com.lcwd.user.service.entities.User;
 import com.lcwd.user.service.exceptions.IncompleteDataException;
 import com.lcwd.user.service.exceptions.ResourseNotFoundException;
+import com.lcwd.user.service.external.services.HotelService;
+import com.lcwd.user.service.external.services.RatingService;
 import com.lcwd.user.service.repositores.UserRepository;
 import com.lcwd.user.service.services.UserService;
 
@@ -24,7 +26,13 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private HotelService hotelService;
+
+    @Autowired
+    private RatingService ratingService;
+
+    // @Autowired
+    // private RestTemplate restTemplate;
 
     @Override
     public User create(User user) {
@@ -35,21 +43,44 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> get() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        users = users.stream().map(user -> {
+            user = get(user.getId());
+            return user;
+        }).toList();
+        return users;
     }
+
+    // @Override
+    // public User get(String id) {
+    // User user = userRepository.findById(id).orElseThrow(
+    // () -> new ResourseNotFoundException("User with given id is not found on
+    // server !! id : " + id));
+    // Rating[] ratingResponse = restTemplate
+    // .getForObject("http://RatingService/ratings/user/" + id, Rating[].class);
+    // List<Rating> userRating = Arrays.stream(ratingResponse).toList();
+    // if (userRating != null) {
+    // userRating = userRating.stream().map(rating -> {
+    // ResponseEntity<Hotel> response = restTemplate
+    // .getForEntity("http://HotelService/hotels/" + rating.getHotelId(),
+    // Hotel.class);
+    // Hotel hotel = response.getBody();
+    // rating.setHotel(hotel);
+    // return rating;
+    // }).collect(Collectors.toList());
+    // }
+    // user.setRatings(userRating);
+    // return user;
+    // }
 
     @Override
     public User get(String id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new ResourseNotFoundException("User with given id is not found on server !! id : " + id));
-        Rating[] ratingResponse = restTemplate
-                .getForObject("http://RatingService/ratings/user/" + id, Rating[].class);
-        List<Rating> userRating = Arrays.stream(ratingResponse).toList();
+        List<Rating> userRating = ratingService.getByUserId(id).getBody();
         if (userRating != null) {
             userRating = userRating.stream().map(rating -> {
-                ResponseEntity<Hotel> response = restTemplate
-                        .getForEntity("http://HotelService/hotels/" + rating.getHotelId(), Hotel.class);
-                Hotel hotel = response.getBody();
+                Hotel hotel = hotelService.get(rating.getHotelId()).getBody();
                 rating.setHotel(hotel);
                 return rating;
             }).collect(Collectors.toList());

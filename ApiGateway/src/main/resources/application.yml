@@ -1,6 +1,7 @@
 spring:
   application:
     name: ApiGateway
+
   cloud:
     gateway:
       mvc:
@@ -19,15 +20,10 @@ spring:
           uri: lb://RatingService
           predicates:
             - Path=/ratings/**
+  
+  config:
+    import: optional:configserver:http://localhost:8085
 
-
-
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka  
 
 server:
   port: 8084

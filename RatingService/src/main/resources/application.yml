@@ -1,14 +1,14 @@
 server:
   port: 8083
+
 spring:
+  application:
+    name: RatingService
+
   data:
     mongodb:
       uri: mongodb://localhost:27017
       database: hotel_rating
-
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+  
+  config:
+    import: optional:configserver:http://localhost:8085

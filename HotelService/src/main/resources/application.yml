@@ -2,18 +2,19 @@ server:
   port: 8082
 
 spring:
+  application:
+    name: HotelService
+
   datasource:
     url: jdbc:postgresql://localhost:5432/hotel_rating
     username: root
     password: root
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+  
+  config:
+    import: optional:configserver:http://localhost:8085
     
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka

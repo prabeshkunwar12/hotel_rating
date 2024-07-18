@@ -1,7 +1,10 @@
 package com.lcwd.user.service.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lcwd.user.service.entities.User;
 import com.lcwd.user.service.services.UserService;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserService userService;
+
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
 
     // create
     @PostMapping
@@ -32,16 +39,32 @@ public class UserController {
 
     // single user get
     @GetMapping("/{id}")
+    @CircuitBreaker(name = "getUserCircuitBreaker", fallbackMethod = "getUserCircuitBreakerFallback")
     public ResponseEntity<User> get(@PathVariable String id) {
         User user = userService.get(id);
         return ResponseEntity.ok(user);
     }
 
+    // Fallback method for getUserCircuitBreaker
+    public ResponseEntity<User> getUserCircuitBreakerFallback(String id, Exception ex) {
+        logger.info("Fallback is executed because service is down", ex.getMessage());
+        User user = new User("1111", "Dummy", "Dummy@dum.dum", "Dummy user is created because service is down.",
+                new ArrayList<>());
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
     // all user get
     @GetMapping
+    @CircuitBreaker(name = "getAllUserCircuitBreaker", fallbackMethod = "getAllUserCircuitBreakerFallback")
     public ResponseEntity<List<User>> get() {
         List<User> users = userService.get();
         return ResponseEntity.ok(users);
+    }
+
+    // Fallback method for getAllUserCircuitBreaker
+    public ResponseEntity<List<User>> getAllUserCircuitBreakerFallback(String id, Exception ex) {
+        logger.info("Fallback is executed because service is down", ex.getMessage());
+        return new ResponseEntity<>(new ArrayList<User>(), HttpStatus.OK);
     }
 
     // user update

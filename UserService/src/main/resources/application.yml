@@ -44,7 +44,7 @@ resilience4j:
         permittedNumberOfCallsInHalfOpenState: 2
         slidingWindowSize: 10
         slidingWindowType: COUNT_BASED
-      getAllUserCircuitBreaker:
+      getAllUsersCircuitBreaker:
         registerHealthIndicator: true
         eventConsumerBufferSize: 10
         failureRateThreshold: 50

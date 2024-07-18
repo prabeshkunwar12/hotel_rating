@@ -50,21 +50,25 @@ public class UserController {
         logger.info("Fallback is executed because service is down", ex.getMessage());
         User user = new User("1111", "Dummy", "Dummy@dum.dum", "Dummy user is created because service is down.",
                 new ArrayList<>());
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
     // all user get
     @GetMapping
-    @CircuitBreaker(name = "getAllUserCircuitBreaker", fallbackMethod = "getAllUserCircuitBreakerFallback")
+    @CircuitBreaker(name = "getAllUsersCircuitBreaker", fallbackMethod = "getAllUsersCircuitBreakerFallback")
     public ResponseEntity<List<User>> get() {
         List<User> users = userService.get();
         return ResponseEntity.ok(users);
     }
 
-    // Fallback method for getAllUserCircuitBreaker
-    public ResponseEntity<List<User>> getAllUserCircuitBreakerFallback(String id, Exception ex) {
+    // Fallback method for getAllUsersCircuitBreaker
+    public ResponseEntity<List<User>> getAllUsersCircuitBreakerFallback(Exception ex) {
         logger.info("Fallback is executed because service is down", ex.getMessage());
-        return new ResponseEntity<>(new ArrayList<User>(), HttpStatus.OK);
+        ArrayList<User> users = new ArrayList<>();
+        User user = new User("1111", "Dummy", "Dummy@dum.dum", "Dummy user is created because service is down.",
+                new ArrayList<>());
+        users.add(user);
+        return ResponseEntity.ok(users);
     }
 
     // user update

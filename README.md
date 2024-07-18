@@ -11,23 +11,26 @@ This is a microservice-based application for managing hotel ratings. The applica
 ### 1. User Service (Port: 8081)
 - Manages user information.
 - Connects to a MySQL database (`User DB`).
+- Communicates with Hotel Service and Rating Service using OpenFeign.
 
 ### 2. Hotel Service (Port: 8082)
 - Manages hotel information.
 - Connects to a PostgreSQL database (`Hotel DB`).
-- Communicates with the User Service and Rating Service using OpenFeign.
 
 ### 3. Rating Service (Port: 8083)
 - Manages hotel ratings.
 - Connects to a MongoDB database (`Rating DB`).
-- Communicates with the Hotel Service using OpenFeign.
 
 ### 4. API Gateway (Port: 8084)
 - Routes client requests to the appropriate microservices.
 - Acts as a reverse proxy.
 
-### 5. Eureka Server
+### 5. Eureka Server (Port: 8761)
 - Provides service discovery for all microservices.
+
+### 6. Config Server (Port: 8085)
+- Gets the common properties of servers strored in github repository.
+- Gets different properties set up for developer and production environment as needed.
 
 ## Databases
 
@@ -37,9 +40,9 @@ This is a microservice-based application for managing hotel ratings. The applica
 
 ## Prerequisites
 
-- Java 11 or higher
+- Java 17
 - Maven
-- Docker (for running databases)
+- Docker
 
 ## Running the Application
 
@@ -50,15 +53,7 @@ This is a microservice-based application for managing hotel ratings. The applica
     cd hotel_rating
     ```
 
-2. **Start the Databases**
-   
-   You can use Docker to start the required databases:
-
-    ```bash
-    docker-compose up -d
-    ```
-
-3. **Build and Run the Services**
+2. **Build and Run the Services**
 
     Open a terminal for each service and run the following commands:
 
@@ -92,7 +87,7 @@ This is a microservice-based application for managing hotel ratings. The applica
     mvn spring-boot:run
     ```
 
-4. **Testing the Application**
+3. **Testing the Application**
 
     You can use the provided Postman collection to test the application. Import the `hotel_rating.postman_collection.json` file into Postman.
 
@@ -100,17 +95,23 @@ This is a microservice-based application for managing hotel ratings. The applica
 
 ### Application Properties
 
-Each service has its own `application.properties` file where you can configure the database connections, Eureka server URL, and other settings.
+Each service has its own `application.yml` file where you can configure the database connections, Eureka server URL, and other settings.
 
 ### API Gateway Routes
 
-The API Gateway routes are defined in the `application.properties` file of the API Gateway service.
+The API Gateway routes are defined in the `application.yml` file of the API Gateway service.
+
+### Configuration Repository
+
+Configuration has its own `GitHub repository` where the properties are imported. A new repository can be created with `application.yml` files and imported by modifying `application.yml` file of the `Config Server`.
 
 ## Technologies Used
 
 - Spring Boot
 - Spring Cloud Netflix Eureka
 - Spring Cloud OpenFeign
+- Spring Cloud Config Server
+- GitHub
 - MySQL
 - PostgreSQL
 - MongoDB

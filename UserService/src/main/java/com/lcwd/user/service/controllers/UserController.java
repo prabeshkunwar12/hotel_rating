@@ -21,6 +21,7 @@ import com.lcwd.user.service.entities.User;
 import com.lcwd.user.service.services.UserService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 
 @RestController
 @RequestMapping("/users")
@@ -54,18 +55,27 @@ public class UserController {
     }
 
     // all user get
+    int retryCount = 1;
+
     @GetMapping
-    @CircuitBreaker(name = "getAllUsersCircuitBreaker", fallbackMethod = "getAllUsersCircuitBreakerFallback")
+    // @CircuitBreaker(name = "getAllUsersCircuitBreaker", fallbackMethod =
+    // "getAllUsersFallback")
+    @Retry(name = "getAllUsersRetry", fallbackMethod = "getAllUsersFallback")
     public ResponseEntity<List<User>> get() {
+        logger.info("Retry Count: {}", retryCount);
+        retryCount++;
         List<User> users = userService.get();
         return ResponseEntity.ok(users);
     }
 
     // Fallback method for getAllUsersCircuitBreaker
-    public ResponseEntity<List<User>> getAllUsersCircuitBreakerFallback(Exception ex) {
+    public ResponseEntity<List<User>> getAllUsersFallback(Exception ex) {
         logger.info("Fallback is executed because service is down", ex.getMessage());
         ArrayList<User> users = new ArrayList<>();
-        User user = new User("1111", "Dummy", "Dummy@dum.dum", "Dummy user is created because service is down.",
+        User user = new User(
+                "1111", "Dummy",
+                "Dummy@dum.dum",
+                "Dummy user is created because service is down.",
                 new ArrayList<>());
         users.add(user);
         return ResponseEntity.ok(users);

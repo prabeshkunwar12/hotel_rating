@@ -21,7 +21,8 @@ import com.lcwd.user.service.entities.User;
 import com.lcwd.user.service.services.UserService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+// import io.github.resilience4j.retry.annotation.Retry;
 
 @RestController
 @RequestMapping("/users")
@@ -60,7 +61,8 @@ public class UserController {
     @GetMapping
     // @CircuitBreaker(name = "getAllUsersCircuitBreaker", fallbackMethod =
     // "getAllUsersFallback")
-    @Retry(name = "getAllUsersRetry", fallbackMethod = "getAllUsersFallback")
+    // @Retry(name = "getAllUsersRetry", fallbackMethod = "getAllUsersFallback")
+    @RateLimiter(name = "getAllUsersRateLimitor", fallbackMethod = "getAllUsersFallback")
     public ResponseEntity<List<User>> get() {
         logger.info("Retry Count: {}", retryCount);
         retryCount++;
@@ -78,7 +80,7 @@ public class UserController {
                 "Dummy user is created because service is down.",
                 new ArrayList<>());
         users.add(user);
-        return ResponseEntity.ok(users);
+        return new ResponseEntity<List<User>>(users, HttpStatus.TOO_MANY_REQUESTS);
     }
 
     // user update

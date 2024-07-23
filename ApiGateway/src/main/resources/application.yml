@@ -1,10 +1,13 @@
+
+server:
+  port: 8084
+
 spring:
   application:
     name: ApiGateway
 
   cloud:
     gateway:
-      mvc:
         routes:
         - id: UserService
           uri: lb://UserService
@@ -19,11 +22,17 @@ spring:
         - id: RatingService
           uri: lb://RatingService
           predicates:
-            - Path=/ratings/**
-  
+            - Path=/ratings/**       
+  # importing properties from config server
   config:
     import: optional:configserver:http://localhost:8085
 
+# Octa configuration for API gateway
+okta:
+  oauth2:
+    issuer: https://dev-21290548.okta.com/oauth2/default
+    audience: api://default
+    client-id: 0oaigqzu1otDSM0rA5d7
+    client-secret: rnUZ91e5EFBYWIK6qXqF8w8ratWgu3NEEqRNNG6r9gw87lIfjYvkCgNG1CFzsDhx
+    scopes: openid, profile, email, offline_access
 
-server:
-  port: 8084

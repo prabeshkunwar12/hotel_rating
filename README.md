@@ -105,12 +105,23 @@ The API Gateway routes are defined in the `application.yml` file of the API Gate
 
 Configuration has its own `GitHub repository` where the properties are imported. A new repository can be created with `application.yml` files and imported by modifying `application.yml` file of the `Config Server`.
 
+### Authentication Flow
+
+<img src="Authentication.png" height="500" >
+
+- Login Request: The client sends a login request to the API Gateway.
+- Login: The API Gateway sends the login request to OKTA.
+- Access Token: OKTA provides an access token.
+- Response + Token: The API Gateway sends the response with the token back to the client.
+- Request + Token: The client includes the token in requests to access the services.
+
 ## Technologies Used
 
 - Spring Boot
 - Spring Cloud Netflix Eureka
 - Spring Cloud OpenFeign
 - Spring Cloud Config Server
+- OKTA
 - GitHub
 - MySQL
 - PostgreSQL

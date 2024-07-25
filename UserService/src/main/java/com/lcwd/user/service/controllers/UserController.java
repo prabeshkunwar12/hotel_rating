@@ -55,17 +55,12 @@ public class UserController {
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
-    // all user get
-    int retryCount = 1;
-
     @GetMapping
     // @CircuitBreaker(name = "getAllUsersCircuitBreaker", fallbackMethod =
     // "getAllUsersFallback")
     // @Retry(name = "getAllUsersRetry", fallbackMethod = "getAllUsersFallback")
     @RateLimiter(name = "getAllUsersRateLimitor", fallbackMethod = "getAllUsersFallback")
     public ResponseEntity<List<User>> get() {
-        logger.info("Retry Count: {}", retryCount);
-        retryCount++;
         List<User> users = userService.get();
         return ResponseEntity.ok(users);
     }

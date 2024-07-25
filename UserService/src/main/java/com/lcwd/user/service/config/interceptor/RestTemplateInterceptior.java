@@ -2,6 +2,7 @@ package com.lcwd.user.service.config.interceptor;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -13,6 +14,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 
 public class RestTemplateInterceptior implements ClientHttpRequestInterceptor {
 
+    @Autowired
     private OAuth2AuthorizedClientManager manager;
 
     public RestTemplateInterceptior(OAuth2AuthorizedClientManager manager) {

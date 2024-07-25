@@ -127,6 +127,7 @@ Configuration has its own `GitHub repository` where the properties are imported.
 - PostgreSQL
 - MongoDB
 - Docker
+- JMeter
 - Maven
 
 ## Contributing
